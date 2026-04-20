@@ -1,0 +1,18 @@
+[Unit]
+Description=VEVOR AIO segmented-LCD driver (CPU+GPU temps and clock)
+Documentation=https://github.com/markorenic/vevor-lcd
+# The driver opens /dev/vevor_lcd on start and exits on persistent write
+# errors, so Restart=on-failure cleanly handles plug/unplug cycles without
+# needing a .device-unit binding.
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/vevor-lcd
+# No special shutdown needed — the LCD blanks itself via watchdog ~1 s after
+# the last frame.
+KillSignal=SIGTERM
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,23 @@
+# udev rule for the VEVOR AIO segmented-LCD controller.
+#
+#   USB VID:PID  5131:2007
+#   Product      "FBB" (1.8" segmented LCD pump head)
+#
+# Grants read/write access to the `plugdev` group and creates the symlink
+# /dev/vevor_lcd pointing at the hidraw node, so the driver can open a
+# stable path without having to search /sys.
+#
+# Install automatically with `sudo bash setup.sh`, or manually:
+#
+#   sudo install -m 0644 99-vevor-lcd.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload
+#   sudo udevadm trigger --subsystem-match=usb --subsystem-match=hidraw
+
+# hidraw node + /dev/vevor_lcd symlink
+KERNEL=="hidraw*", ATTRS{idVendor}=="5131", ATTRS{idProduct}=="2007", \
+    MODE="0660", GROUP="plugdev", TAG+="uaccess", SYMLINK+="vevor_lcd"
+
+# Raw USB device (kept so libusb-based consumers — e.g. third-party tools —
+# can also open the device without root).
+SUBSYSTEM=="usb", ATTR{idVendor}=="5131", ATTR{idProduct}=="2007", \
+    MODE="0660", GROUP="plugdev", TAG+="uaccess"

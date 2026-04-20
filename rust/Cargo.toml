@@ -1,0 +1,17 @@
+[package]
+name = "vevor-lcd"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Minimal userspace driver for the VEVOR AIO 1.8\" segmented LCD (USB 5131:2007)"
+license = "MIT"
+repository = "https://github.com/markorenic/vevor-lcd"
+
+[dependencies]
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
