@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.85"
+          components: rustfmt, clippy
+
+      - run: cargo fmt -- --check
+        working-directory: rust
+
+      - run: cargo clippy
+        working-directory: rust
+
+      - run: cargo build --release --locked
+        working-directory: rust
