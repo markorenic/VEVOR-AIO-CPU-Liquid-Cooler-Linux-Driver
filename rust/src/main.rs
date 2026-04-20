@@ -40,12 +40,10 @@ const OFF_MINUTE: usize = 30;
 /// the rest so that if future firmware revisions inspect other bytes they
 /// still see a plausible value.
 const BASELINE: [u8; REPORT_LEN] = [
-    0x00, 0x01, 0x02, 0x36, 0x00, 0x00, 0x05, 0x42, 0x28, 0x36, 0x24, 0x01,
-    0x64, 0x35, 0x00, 0x00, 0x1b, 0x21, 0x28, 0x19, 0x14, 0x21, 0x3a, 0x21,
-    0x3a, 0x14, 0x1a, 0x04, 0x12, 0x0a, 0x25, 0x31, 0x06, 0x1b, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x01, 0x02, 0x36, 0x00, 0x00, 0x05, 0x42, 0x28, 0x36, 0x24, 0x01, 0x64, 0x35, 0x00, 0x00,
+    0x1b, 0x21, 0x28, 0x19, 0x14, 0x21, 0x3a, 0x21, 0x3a, 0x14, 0x1a, 0x04, 0x12, 0x0a, 0x25, 0x31,
+    0x06, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 ];
 
 const DEFAULT_DEVICE: &str = "/dev/vevor_lcd";
@@ -87,9 +85,7 @@ fn hwmon_dirs() -> Vec<(String, PathBuf)> {
     let Ok(entries) = fs::read_dir(HWMON_ROOT) else {
         return out;
     };
-    let mut list: Vec<PathBuf> = entries
-        .filter_map(|e| e.ok().map(|e| e.path()))
-        .collect();
+    let mut list: Vec<PathBuf> = entries.filter_map(|e| e.ok().map(|e| e.path())).collect();
     list.sort();
     for p in list {
         if let Some(name) = read_trim(&p.join("name")) {
@@ -252,10 +248,7 @@ fn localtime_hm() -> (u8, u8) {
     if res.is_null() {
         return (0, 0);
     }
-    (
-        clamp_u8(tm.tm_hour as i32),
-        clamp_u8(tm.tm_min as i32),
-    )
+    (clamp_u8(tm.tm_hour), clamp_u8(tm.tm_min))
 }
 
 // ---------------------------------------------------------------------------
@@ -344,13 +337,17 @@ fn parse_args() -> Result<Args, String> {
                 std::process::exit(0);
             }
             "--device" => {
-                device = it.next().ok_or_else(|| "--device requires a value".to_string())?;
+                device = it
+                    .next()
+                    .ok_or_else(|| "--device requires a value".to_string())?;
             }
             s if s.starts_with("--device=") => {
                 device = s["--device=".len()..].to_string();
             }
             "--interval" => {
-                let v = it.next().ok_or_else(|| "--interval requires a value (ms)".to_string())?;
+                let v = it
+                    .next()
+                    .ok_or_else(|| "--interval requires a value (ms)".to_string())?;
                 interval_ms = v.parse().map_err(|e| format!("--interval: {e}"))?;
             }
             s if s.starts_with("--interval=") => {
@@ -375,7 +372,9 @@ fn parse_args() -> Result<Args, String> {
 }
 
 fn print_help() {
-    let prog = env::args().next().unwrap_or_else(|| "vevor-lcd".to_string());
+    let prog = env::args()
+        .next()
+        .unwrap_or_else(|| "vevor-lcd".to_string());
     println!(
         "vevor-lcd — minimal driver for the VEVOR segmented-LCD AIO (5131:2007)\n\
          \n\

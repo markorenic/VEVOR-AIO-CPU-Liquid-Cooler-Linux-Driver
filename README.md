@@ -1,5 +1,9 @@
 # vevor-lcd Linux Driver
 
+[![ci](https://github.com/markorenic/VEVOR-AIO-CPU-Liquid-Cooler-Linux-Driver/actions/workflows/ci.yml/badge.svg)](https://github.com/markorenic/VEVOR-AIO-CPU-Liquid-Cooler-Linux-Driver/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![rust](https://img.shields.io/badge/rust-1.85+-DEA584?logo=rust&logoColor=white)](https://doc.rust-lang.org/stable/edition-guide/rust-2024/index.html)
+
 Tiny Linux driver for the **VEVOR AIO CPU cooler** [B0F1TMW79P](https://www.amazon.com/dp/B0F1TMW79P).
 
 If your VEVOR AIO has a full *graphical* LCD instead (Freestyle images,
